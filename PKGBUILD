@@ -7,19 +7,16 @@ arch=('x86_64')
 url="https://github.com/metis-os/metis-sideload"
 license=('MIT')
 makedepends=('git')
-depends=('sudo')
+depends=('bash')
 provides=("${pkgname}")
 options=(!strip !emptydirs)
 source=(${pkgname}::"git+${url}")
 sha256sums=('SKIP')
 
 package() {
-	install -dm755 ${pkgdir}"/bin"
-	install -dm755 ${pkgdir}"/bin"
-	install -dm755 ${pkgdir}"/bin"
-	cp ${srcdir}"/metis-sideload/files/metis-sideload" ${pkgdir}"/bin/"
-	cp ${srcdir}"/metis-sideload/files/metischroot" ${pkgdir}"/bin/"
-    cp ${srcdir}"/metis-sideload/files/metis-basetrap" ${pkgdir}"/bin/"
+	install -Dm754 "${srcdir}/files/metis-sideload" "${pkgdir}/usr/local/bin/metis-sideload"
+	install -Dm754 "${srcdir}/files/final.sh" "${pkgdir}/usr/local/bin/final.sh"
+	install -Dm754 "${srcdir}/files/post-install.sh" "${pkgdir}/usr/local/config/post-install.sh"
 }
 
 pkgver() {
