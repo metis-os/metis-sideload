@@ -143,11 +143,28 @@ settingHosts() {
 }
 
 installingBootloader() {
-    clear
     #if you are dualbooting, add os-prober with grub and efibootmgr
-    echo "Installing grub networkmanager and zsh shell..."
-    pacman -Sy --needed --noconfirm grub networkmanager-runit zsh || installationError
-    sleep 3s
+    pacman -Sy --needed --noconfirm grub networkmanager-runit zsh
+}
+
+bootloaderCompleted() {
+  s=0
+  for ((i=1;i<=5;i++)); do
+    if ! installingBootloader; then
+      ((s++))
+      if ((s==5)); then
+        echo "Bootloader installation failed..."
+        installationError
+      fi
+        echo "Bootloader installation failed. Retrying..."
+        sleep 2s
+      else {
+        echo "Bootloader installation successful..."
+        sleep 2s
+        break
+      }
+    fi
+  done
 }
 
 enablingNetworkManager() {
@@ -158,16 +175,32 @@ enablingNetworkManager() {
     clear
 }
 
+loginManager(){
+    pacman -Sy --needed --noconfirm metis-ly-runit
+}
+
 installingLoginManager() {
-    sleep 2s
-    clear
-    echo "Installing metis-ly loginmanager..."
-    pacman -Sy --needed --noconfirm metis-ly-runit || ignoreableErrors
-    sleep 2s
-    clear
-    echo "Enabling metis-ly service for runit"
-    ln -s /etc/runit/sv/metis-ly /etc/runit/runsvdir/default || serviceError
-    clear
+  s=0
+  for ((i=1;i<=5;i++)); do
+    if ! loginManager; then
+      ((s++))
+      if ((s==5)); then
+        echo "Login manager installation failed..."
+        ignoreableErrors
+        sleep 3s
+      fi
+        echo "Ly login manager installation failed. Retrying..."
+        sleep 2s
+      else {
+        echo "ly login manager installation successful..."
+        sleep 2s
+        echo "Enabling metis-ly service for runit"
+        ln -s /etc/runit/sv/metis-ly /etc/runit/runsvdir/default || serviceError
+        sleep 3s
+        break
+      }
+    fi
+  done
 }
 
 addingUser() {
@@ -213,10 +246,27 @@ copyingConfig() {
 }
 
 installingPackages() {
-    sleep 2s
-    clear
-    echo "Installing required packages for metis-os"
-    pacman -Sy --needed --noconfirm metis-dwm metis-st metis-dmenu metis-wallpapers xorg-server xorg-xinit xorg-xsetroot nerd-fonts-jetbrains-mono ttf-font-awesome pavucontrol pulseaudio pulseaudio-alsa firefox brillo linux-zen-headers linux-firmware curl git neovim zsh metis-slstatus picom-jonaburg-git acpi xwallpaper || installationError
+    pacman -Sy --needed --noconfirm metis-dwm metis-st metis-dmenu metis-wallpapers xorg-server xorg-xinit xorg-xsetroot nerd-fonts-jetbrains-mono ttf-font-awesome pavucontrol pulseaudio pulseaudio-alsa firefox brillo linux-zen-headers linux-firmware curl git neovim zsh metis-slstatus picom-jonaburg-git acpi xwallpaper libxft-bgra|| installationError
+}
+
+packagesCompleted() {
+  s=0
+  for ((i=1;i<=5;i++)); do
+    if ! installingPackages; then
+      ((s++))
+      if ((s==5)); then
+        echo "Failed to install required package for metis-os..."
+        installationError
+      fi
+        echo "Failed to install required package for metis-os. Retrying..."
+        sleep 2s
+      else {
+        echo "Installation of required package for metis-os is successful..."
+        sleep 2s
+        break
+      }
+    fi
+  done
 }
 
 installingMicrocode() {
@@ -253,17 +303,39 @@ configuringBootloader() {
       read -r grubpartition
       mkfs.fat -F 32 /dev/"$grubpartition"
       mkdir -p /boot/efi
-      mount /dev/"$grubpartition" /boot/efi || failed
+      mount /dev/"$grubpartition" /boot/efi
       grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=metis --removable
       grub-mkconfig -o /boot/grub/grub.cfg
     fi
     sleep 2s
 }
 
+bootloaderconfigCompleted() {
+  s=0
+  for ((i=1;i<=3;i++)); do
+    if ! configuringBootloader; then
+      ((s++))
+      if ((s==3)); then
+        echo "Failed to configure bootloader..."
+        failed
+      fi
+        umount /dev/"$grubpartition"
+        clear
+        echo "Failed to configure bootloader. Retrying..."
+        sleep 2s
+      else {
+        echo "Bootloader configuration successful..."
+        sleep 2s
+        break
+      }
+    fi
+  done
+}
+
 graphicsDriver() {
-    sleep 2s
     clear
     echo "Searching and Installing graphics driver if available"
+    sleep 2s
     if lspci | grep "NVIDIA|GeForce"; then
         pacman -S --noconfirm --needed nvidia nvidia-utils || ignoreableErrors
     elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
@@ -292,14 +364,14 @@ settingLang
 settingKeyboard
 settingHostname
 settingHosts
-installingBootloader
+bootloaderCompleted
 enablingNetworkManager
 installingLoginManager
 addingUser
 sudoAccess
 copyingConfig
-installingPackages
+packagesCompleted
 installingMicrocode
-configuringBootloader
+bootloaderconfigCompleted
 graphicsDriver
 secondphaseCompleted

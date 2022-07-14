@@ -10,18 +10,19 @@ postRemoval() {
 unmountingDrives() {
     clear
     echo "Umounting all the drives" 
-    umount -R /mnts
+    umount -R /mnt
     sleep 2s
 }
 
 installationComplete() {
     echo "Metis Linux Installation Finished!!!"
+    echo ""
     echo "If you've installed metis-os in a VM, it may be buggy or could perform slow or abnormal, try disabling picom compositor."
-    echo "If you get any problem, bug, help or error, report it to https://github.com/metis-os/reports/issues or https://t.me/metislinux"
+    echo "If you get any problem, bug, or error, report it to https://github.com/metis-os/reports/issues or https://t.me/metislinux"
     echo "Default key-bindings for metis-linux is available at https://metislinux.org/key-bindings"
     echo "Rebooting in 30 seconds!!!"
     sleep 30s
-    reboot
+    loginctl reboot
 }
 
 displayArt() {
