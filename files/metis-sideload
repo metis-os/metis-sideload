@@ -97,12 +97,65 @@ displayArt(){
   "
 }
 
-checkDrive(){
-  if ! lsblk | grep "$drive" &> /dev/null ; then
+selectDrive() {
+  lsblk
+  echo "Enter the drive to install metis linux on it."
+  echo "Enter Drive (eg. sda or vda or nvme0n1): "
+  read -r drive
+}
+
+checkDrive() {
+  while ! lsblk | grep "$drive"  &> /dev/null
+  do
     clear
-    echo -e "$drive is not found. Check your available disks and try again.\nAborting installation\nInstallation failed..."
-    exit 1
-  fi
+    echo -e "$drive is not found. Check your available disks and try again..."
+    selectDrive
+  done
+}
+
+selectRoot() {
+  lsblk
+  echo "Enter the root partition (eg: sda1 or nvme0n1p2 or vda4): "
+  read -r rootpartition
+}
+
+checkRoot() {
+  while ! lsblk | grep "$rootpartition"  &> /dev/null
+  do
+    clear
+    echo -e "$rootpartition is not found. Check your available partitions and try again..."
+    selectRoot
+  done
+}
+
+selectHome() {
+  lsblk
+  echo "Enter the home partition (eg: sda1 or nvme0n1p2 or vda4): "
+  read -r homepartition
+}
+
+checkHome() {
+  while ! lsblk | grep "$homepartition"  &> /dev/null
+  do
+    clear
+    echo -e "$homepartition partition is not found. Check your available partitions and try again..."
+    selectHome
+  done
+}
+
+selectSwap() {
+  lsblk
+  echo "Enter swap partition (eg: sda3, nvme0n1p1or vda3): "
+  read -r swappartition
+}
+
+checkSwap() {
+  while ! lsblk | grep "$swappartition"  &> /dev/null
+  do
+    clear
+    echo -e "$swappartition partition is not found. Check your available partitions and try again..."
+    selectSwap
+  done
 }
 
 diskPartition(){
@@ -115,10 +168,8 @@ diskPartition(){
       after formating your disk there is no way to get data back
   ------------------------------------------------------------------------
   "
-  lsblk
-  echo "Enter the drive to install metis linux on it."
-  echo "Enter Drive (eg. sda or vda or nvme0n1): "
-  read -r drive
+  sleep 5s
+  selectDrive
   checkDrive
   sleep 2s
   clear
@@ -190,10 +241,8 @@ diskPartition(){
   echo "$filesystemtype is the selected file system type."
   echo "Getting ready for formatting drives."
   sleep 3s
-  clear
-  lsblk
-  echo "Enter the root partition (eg: sda1 or nvme0n1p2 or vda4): "
-  read -r rootpartition
+  selectRoot
+  checkRoot
   mkfs."$filesystemtype" /dev/"$rootpartition"
   mount /dev/"$rootpartition" /mnt
   if mountpoint /mnt = "/mnt is not a mountpoint"; then
@@ -207,12 +256,12 @@ diskPartition(){
 
   clear
   lsblk
-  echo "Did you also create separate home partition? [y/n]: " 
+  echo "Did you create a separate home partition? [y/n]: " 
   read -r answerhome
   case "$answerhome" in
     y | Y | yes | Yes | YES)
-    echo "Enter home partition (eg: sda2 or nvme0n1p1 or vda2): "
-    read -r homepartition
+    selectHome
+    checkHome
     mkfs."$filesystemtype" /dev/"$homepartition"
     mkdir /mnt/home
     mount /dev/"$homepartition" /mnt/home
@@ -231,12 +280,12 @@ diskPartition(){
   esac
   clear
   lsblk
-  echo  "Did you also create swap partition? [y/n]: "
+  echo  "Did you create a separate swap partition? [y/n]: "
   read -r answerswap
   case "$answerswap" in
     y | Y | yes | Yes | YES)
-    echo "Enter swap partition (eg: sda3, nvme0n1p1or vda3): "
-    read -r swappartition
+    selectSwap
+    checkSwap
     mkswap /dev/"$swappartition"
     swapon /dev/"$swappartition"
     ;;
@@ -262,7 +311,7 @@ baseCompleted() {
         installationError
       fi
         echo "Base installation failed. Retrying..."
-        sleep 2s
+        sleep 3s
       else {
         echo "Base installation successful..."
         sleep 2s
@@ -286,7 +335,7 @@ kernelCompleted() {
         installationError
       fi
         echo "Kernel installation failed. Retrying..."
-        sleep 2s
+        sleep 3s
       else {
         echo "Kernel installation successful..."
         sleep 2s
