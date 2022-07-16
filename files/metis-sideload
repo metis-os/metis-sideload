@@ -214,7 +214,7 @@ diskPartition(){
   lsblk
   echo " 1. ext4"
   echo " 2. xfs"
-  echo " 3. btrfs"
+  echo " 3. btrfs (only for uefi systems. leagacy system doesnot support btrfs)"
   echo " 4. f2fs"
   echo " Boot partition will be formatted later in fat32 file system (for uefi systems only)."
   echo "Choose your linux file system type for formatting drives [default=ext4]: "
@@ -228,7 +228,14 @@ diskPartition(){
     filesystemtype="xfs"
     ;;
     3 | btrfs | Btrfs | BTRFS)
-    filesystemtype="btrfs"
+      if [[ ! -d "/sys/firmware/efi" ]]; then
+        echo "Legacy system detected..."
+        echo "btrfs file system unsupported in legacy systems!"
+        echo "Using default = ext4"
+        filesystemtype="ext4"
+      else
+        filesystemtype="btrfs"
+      fi
     ;;
     4 | f2fs | F2fs | F2FS)
     filesystemtype="f2fs"

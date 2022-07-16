@@ -191,7 +191,7 @@ enablingNetworkManager() {
 }
 
 loginManager(){
-    pacman -Sy --needed --noconfirm metis-ly-runit
+    pacman -Sy --needed --noconfirm metis-ly metis-ly-runit
 }
 
 installingLoginManager() {
@@ -209,8 +209,13 @@ installingLoginManager() {
       else {
         echo "ly login manager installation successful..."
         sleep 2s
+        clear
         echo "Enabling metis-ly service for runit"
-        ln -s /etc/runit/sv/metis-ly /etc/runit/runsvdir/default || serviceError
+        echo "This could sometimes popup a demo login screen"
+        echo "If occured just press ctrl + alt + f1 keys together and continue the installation..."
+        sleep 10s
+        rm -rf /etc/runit/runsvdir/default/agetty-tty2 || ignoreableErrors
+        ln -s /etc/runit/sv/ly /etc/runit/runsvdir/default || serviceError
         sleep 3s
         break
       }
@@ -261,7 +266,7 @@ copyingConfig() {
 }
 
 installingPackages() {
-    pacman -Sy --needed --noconfirm metis-dwm metis-st metis-dmenu metis-wallpapers xorg-server xorg-xinit xorg-xsetroot nerd-fonts-jetbrains-mono ttf-font-awesome pavucontrol pulseaudio pulseaudio-alsa firefox brillo git neovim metis-slstatus picom-jonaburg-git acpi xwallpaper libxft-bgra
+    pacman -Sy --needed --noconfirm metis-dwm metis-st metis-dmenu metis-wallpapers xorg-server xorg-xinit xorg-xsetroot nerd-fonts-jetbrains-mono ttf-font-awesome pavucontrol pulseaudio pulseaudio-alsa firefox brillo git neovim metis-slstatus picom-jonaburg-git acpi xwallpaper libxft-bgra polkit
 }
 
 packagesCompleted() {
@@ -373,6 +378,7 @@ configuringBootloader() {
       mkfs.fat -F 32 /dev/"$grubpartition" || failed
       mkdir -p /boot/efi
       mount /dev/"$grubpartition" /boot/efi
+      lsblk
       if mountpoint /boot/efi = "/boot/efi is not a mountpoint"; then
         clear
         echo -e "$grubpartition is not mounted successfully. Aborting installation!\nInstallation failed..."
@@ -421,7 +427,6 @@ settingHostname
 settingHosts
 bootloaderCompleted
 enablingNetworkManager
-# installingLoginManager
 addingUser
 sudoAccess
 copyingConfig
@@ -429,4 +434,5 @@ packagesCompleted
 installingMicrocode
 configuringBootloader
 graphicsDriver
+installingLoginManager
 secondphaseCompleted
