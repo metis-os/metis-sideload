@@ -254,7 +254,7 @@ copyingConfig() {
     mv /config/os-release /usr/lib/ || failed
     mv /config/grub /etc/default/grub || failed
     mv /config/issue /etc/issue || failed
-    mv /etc/artix-release /etc/metis-release
+    mv /etc/artix-release /etc/metis-release || failed
 
     mv /config/xinitrc /home/"$username"/.xinitrc || failed
     chown "$username":users /home/"$username"/.xinitrc || failed
