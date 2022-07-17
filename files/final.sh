@@ -20,9 +20,6 @@ pointToRemember() {
     echo "After Reboting into newly installed metis linux system, you must select xinitrc in login screen."
     echo "There's are options like Dwm, shell and xinitrc above the username field. Strictly select xinitrc, then enter your username and password and login."
     echo " "
-    echo "Password fields are shown as 0 characters in place of astrik(*) without showing the actual password."
-    echo "This a one time process rather call first time process. Then it will remember xinitrc and your username. You just need to enter your password from second logins."
-    echo " "
     sleep 15s
 }
 
