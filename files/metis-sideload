@@ -3,7 +3,7 @@
 networkError() {
   sleep 2s
   clear
-  echo -e "Couldnot connect to the internet.\nCheck your Internet Connection and please try again.\nExitting...\nReport any problem, bug, and errors to https://github.com/metis-os/reports/issues"
+  echo -e "Could not connect to the internet.\nCheck your internet connection and please try again.\nExiting...\nReport any bugs or errors to https://github.com/metis-os/reports/issues"
   sleep 2s
   exit 1
 }
@@ -11,7 +11,7 @@ networkError() {
 failed() {
   sleep 2s
   clear
-  echo -e "Something went wrong.\nThe command could not be executed correctly!\nPlease try again.\nExitting...\nReport any problem, bug, and errors to https://github.com/metis-os/reports/issues"
+  echo -e "Something went wrong.\nThe command could not be executed correctly!\nPlease try again.\nExiting...\nReport any bugs or errors to https://github.com/metis-os/reports/issues"
   sleep 2s
   exit 1
 }
@@ -19,7 +19,7 @@ failed() {
 installationError() {
   sleep 2s
   clear
-  echo -e "Something went wrong.\nAll the packages couldn't be installed correctly!\nPlease try again.\nExitting...\nReport any problem, bug, and errors to https://github.com/metis-os/reports/issues"
+  echo -e "Something went wrong.\nAll the packages couldn't be installed correctly!\nPlease try again.\nExiting...\nReport any bugs or errors to https://github.com/metis-os/reports/issues"
   sleep 2s
   exit 1
 }
@@ -28,8 +28,8 @@ configError() {
   sleep 2s
   clear
   echo "Checking configs in new system..."
-  if ! ls /mnt/config  &> /dev/null; then 
-    echo -e "Reuired config files couldn't be copied to new system. Installation failed!\nAborting...\nReport any problem, bug, and errors to https://github.com/metis-os/reports/issues"
+  if ! ls /mnt/config  &> /dev/null; then
+    echo -e "Required config files couldn't be copied to new system. Installation failed!\nAborting...\nReport any bugs or errors to https://github.com/metis-os/reports/issues"
     exit 1
   else
     ls /mnt/config
@@ -41,17 +41,17 @@ configError() {
 ignoreableErrors() {
   sleep 2s
   clear
-  echo -e "Something went wrong.\nThe command was not executed correctly!\nThe error can be negleted as it doesn't affect our installation.\nContinuing the installation...\nReport any problem, bug, and errors to https://github.com/metis-os/reports/issues"
+  echo -e "Something went wrong.\nThe command was not executed correctly!\nThe error can be neglected as it doesn't affect our installation.\nContinuing the installation...\nReport any bugs, and errors to https://github.com/metis-os/reports/issues"
   sleep 3s
 }
 
 updateMirrors() {
   sleep 2s
   clear
-  if ! which rankmirrors &> /dev/null; then 
-    echo -e "rankmirrors command not found\nCouldn't update the repository mirrorlists\nContinuing without updating mirrors have got chances of installation failure..."
+  if ! which rankmirrors &> /dev/null; then
+    echo -e "rankmirrors isn't installed.\nCouldn't update the repository mirrorlists\nContinuing without updating mirrors will increase the chances of installation failure..."
   else
-    echo -e "\nUpdating latest and fastest mirrorlists to download packages faster.\nBe patient, this may take some time upto few minutes..."
+    echo -e "\nUpdating latest and fastest mirrorlists to download packages.\nBe patient, this may take some time..."
     rankmirrors -n 20 /etc/pacman.d/mirrorlist > /etc/pacman.d/mirrorlist.new
     mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak || ignoreableErrors
     mv /etc/pacman.d/mirrorlist.new /etc/pacman.d/mirrorlist || failed
@@ -65,14 +65,14 @@ checkingConnection() {
   clear
   echo "Checking internet connection..."
   ping -c 3 metislinux.org || networkError
-  echo  "Cool! Internet Connection Available. Getting ready for installation..."
+  echo  "Cool! Internet connection available. Getting ready for installation..."
   sleep 3s
 }
 
 settingFont() {
   sleep 2s
   clear
-  echo "Setting bigger font for better readability..." 
+  echo "Setting bigger font for better readability..."
   sleep 2s
   setfont ter-v22b || ignoreableErrors
 }
@@ -88,7 +88,7 @@ displayArt(){
   |                       +-+-+-+-+-+        +-+-+-+-+-+        +-+-+-+-+-+-+-+-+-+                         |
   |                                                                                                         |
   |---------------------------------------------------------------------------------------------------------|
-  |                                 Official Cli installer for metis linux.                                 |
+  |                                 Official CLI installer for Metis Linux                                  |
   |---------------------------------------------------------------------------------------------------------|
   |                                 Install Metis Linux in few clicks                                       |
   |               Check: https://github.com/metis-os for details or visit https://metislinux.org            |
@@ -99,7 +99,7 @@ displayArt(){
 
 selectDrive() {
   lsblk
-  echo "Enter the drive to install metis linux on it."
+  echo "Enter the drive to install metis linux on."
   echo "Enter Drive (eg. sda or vda or nvme0n1): "
   read -r drive
 }
@@ -108,7 +108,7 @@ checkDrive() {
   while ! lsblk | grep "$drive"  &> /dev/null
   do
     clear
-    echo -e "$drive is not found. Check your available disks and try again..."
+    echo -e "$drive was not found. Check your available disks and try again..."
     selectDrive
   done
 }
@@ -123,7 +123,7 @@ checkRoot() {
   while ! lsblk | grep "$rootpartition"  &> /dev/null
   do
     clear
-    echo -e "$rootpartition is not found. Check your available partitions and try again..."
+    echo -e "$rootpartition was not found. Check your available partitions and try again..."
     selectRoot
   done
 }
@@ -138,7 +138,7 @@ checkHome() {
   while ! lsblk | grep "$homepartition"  &> /dev/null
   do
     clear
-    echo -e "$homepartition partition is not found. Check your available partitions and try again..."
+    echo -e "$homepartition partition was not found. Check your available partitions and try again..."
     selectHome
   done
 }
@@ -153,7 +153,7 @@ checkSwap() {
   while ! lsblk | grep "$swappartition"  &> /dev/null
   do
     clear
-    echo -e "$swappartition partition is not found. Check your available partitions and try again..."
+    echo -e "$swappartition partition was not found. Check your available partitions and try again..."
     selectSwap
   done
 }
@@ -165,7 +165,7 @@ diskPartition(){
   ------------------------------------------------------------------------
           THIS WILL FORMAT AND DELETE ALL DATA ON THE DISK
         Please make sure you know what you are doing because
-      after formating your disk there is no way to get data back
+      after formatting your disk there is no way to get data back
   ------------------------------------------------------------------------
   "
   sleep 5s
@@ -174,7 +174,7 @@ diskPartition(){
   sleep 2s
   clear
   lsblk
-  echo "Choose a familier disk utility tool to partition your drive! [Default=cfdisk]: "
+  echo "Choose a disk utility tool to partition your drive! [Default=cfdisk]: "
   echo " 1. fdisk"
   echo " 2. cfdisk"
   echo " 3. gdisk"
@@ -203,7 +203,7 @@ diskPartition(){
   echo "Getting ready for creating partitions!"
   sleep 2s
   clear
-  echo "boot partition is mandatory for uefi systems. Skip it for legacy systems"
+  echo "boot partition is mandatory for UEFI systems. Skip it for legacy systems"
   echo "root partition is mandatory."
   echo "home and swap partitions are optional but recommended!"
   echo "Also, you can create a separate partition for timeshift backup (optional)!"
@@ -214,10 +214,10 @@ diskPartition(){
   lsblk
   echo " 1. ext4"
   echo " 2. xfs"
-  echo " 3. btrfs (only for uefi systems. leagacy system doesnot support btrfs)"
+  echo " 3. btrfs (only for UEFI systems. legacy systems do not support btrfs)"
   echo " 4. f2fs"
-  echo " Boot partition will be formatted later in fat32 file system (for uefi systems only)."
-  echo "Choose your linux file system type for formatting drives [default=ext4]: "
+  echo " Boot partition will be formatted later in fat32 file system (for UEFI systems only)."
+  echo "Choose your Linux file system type for formatting drives [default=ext4]: "
   read -r filesystemtype
 
   case "$filesystemtype" in
@@ -241,7 +241,7 @@ diskPartition(){
     filesystemtype="f2fs"
     ;;
     *)
-    echo "Unknown or unsupported Filesystem. Default = ext4."
+    echo "Unknown or unsupported file system. Default = ext4."
     filesystemtype="ext4"
     ;;
   esac
@@ -263,7 +263,7 @@ diskPartition(){
 
   clear
   lsblk
-  echo "Did you create a separate home partition? [y/n]: " 
+  echo "Did you create a separate home partition? [y/n]: "
   read -r answerhome
   case "$answerhome" in
     y | Y | yes | Yes | YES)
@@ -357,7 +357,7 @@ generatingFstab() {
   clear
   echo "generating fstab file"
   fstabgen -U /mnt > /mnt/etc/fstab || failed
-  echo "Checking Fstab Contents..."
+  echo "Checking fstab contents..."
   cat /mnt/etc/fstab
   sleep 3s
 }
