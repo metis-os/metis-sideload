@@ -3,10 +3,10 @@
 networkError() {
   sleep 2s
   clear
-  echo -e "Couldnot connect to the internet.\n"
-  echo -e "Check your Internet Connection and please try again.\n"
-  echo -e "Exitting...\n"
-  echo -e "Report any problem, bug, and errors to https://github.com/metis-os/reports/issues"
+  echo "Couldnot connect to the internet."
+  echo "Check your Internet Connection and please try again."
+  echo "Exitting..."
+  echo "Report any problem, bug, and errors to https://github.com/metis-os/reports/issues"
   sleep 2s
   exit 1
 }
@@ -14,11 +14,11 @@ networkError() {
 failed() {
   sleep 2s
   clear
-  echo -e "Something went wrong.\n"
-  echo -e "The command could not be executed correctly!\n"
-  echo -e "Please try again.\n"
-  echo -e "Exitting...\n"
-  echo -e "Report any problem, bug, and errors to https://github.com/metis-os/reports/issues"
+  echo "Something went wrong."
+  echo "The command could not be executed correctly!"
+  echo "Please try again."
+  echo "Exitting..."
+  echo "Report any problem, bug, and errors to https://github.com/metis-os/reports/issues"
   sleep 2s
   exit 1
 }
@@ -26,11 +26,11 @@ failed() {
 installationError() {
   sleep 2s
   clear
-  echo -e "Something went wrong.\n"
-  echo -e "All the packages couldn't be installed correctly!\n"
-  echo -e "Please try again.\n"
-  echo -e "Exitting...\n"
-  echo -e "Report any problem, bug, and errors to https://github.com/metis-os/reports/issues"
+  echo "Something went wrong."
+  echo "All the packages couldn't be installed correctly!"
+  echo "Please try again."
+  echo "Exitting..."
+  echo "Report any problem, bug, and errors to https://github.com/metis-os/reports/issues"
   sleep 2s
   exit 1
 }
@@ -39,11 +39,11 @@ configError() {
   sleep 2s
   clear
   echo "Checking configs in new system..."
-  if ! ls /mnt/config  &> /dev/null; then 
-    echo -e "Reuired config files couldn't be copied to new system."
-    echo -e "Installation failed!\n"
-    echo -e "Aborting...\n"
-    echo -e "Report any problem, bug, and errors to https://github.com/metis-os/reports/issues"
+  if ! ls /mnt/config  &> /dev/null; then
+    echo "Reuired config files couldn't be copied to new system."
+    echo "Installation failed!"
+    echo "Aborting..."
+    echo "Report any problem, bug, and errors to https://github.com/metis-os/reports/issues"
     exit 1
   else
     ls /mnt/config
@@ -55,11 +55,11 @@ configError() {
 ignoreableErrors() {
   sleep 2s
   clear
-  echo -e "Something went wrong.\n"
-  echo -e "The command was not executed correctly!\n"
-  echo -e "The error can be negleted as it doesn't affect our installation.\n"
-  echo -e "Continuing the installation...\n"
-  echo -e "Report any problem, bug, and errors to https://github.com/metis-os/reports/issues"
+  echo "Something went wrong."
+  echo "The command was not executed correctly!"
+  echo "The error can be negleted as it doesn't affect our installation."
+  echo "Continuing the installation..."
+  echo "Report any problem, bug, and errors to https://github.com/metis-os/reports/issues"
   sleep 3s
 }
 
@@ -67,12 +67,13 @@ updateMirrors() {
   sleep 2s
   clear
   if ! which rankmirrors &> /dev/null; then
-    echo -e "rankmirrors command not found\n"
-    echo -e "Couldn't update the repository mirrorlists\n"
-    echo -e "Continuing without updating mirrors have got chances of installation failure..."
+    echo "rankmirrors command not found"
+    echo "Couldn't update the repository mirrorlists"
+    echo "Continuing without updating mirrors have got chances of installation failure..."
   else
-    echo -e "\nUpdating latest and fastest mirrorlists to download packages faster.\n"
-    echo -e "Be patient, this may take some time upto few minutes..."
+    echo
+    echo "Updating latest and fastest mirrorlists to download packages faster."
+    echo "Be patient, this may take some time upto few minutes..."
     rankmirrors -n 20 /etc/pacman.d/mirrorlist > /etc/pacman.d/mirrorlist.new
     mv /etc/pacman.d/mirrorlist /etc/pacman.d/mirrorlist.bak || ignoreableErrors
     mv /etc/pacman.d/mirrorlist.new /etc/pacman.d/mirrorlist || failed
@@ -129,7 +130,7 @@ checkDrive() {
   while ! lsblk | grep "$drive"  &> /dev/null
   do
     clear
-    echo -e "$drive is not found. Check your available disks and try again..."
+    echo "$drive is not found. Check your available disks and try again..."
     selectDrive
   done
 }
@@ -275,9 +276,9 @@ diskPartition(){
   mount /dev/"$rootpartition" /mnt
   if mountpoint /mnt = "/mnt is not a mountpoint"; then
     clear
-    echo -e "$rootpartition is not mounted successfully."
-    echo -e "Aborting installation!\n"
-    echo -e "Installation failed..."
+    echo "$rootpartition is not mounted successfully."
+    echo "Aborting installation!"
+    echo "Installation failed..."
     exit 1
   else
     echo "Cool $rootpartition mounted at /mnt"
@@ -297,7 +298,9 @@ diskPartition(){
     mount /dev/"$homepartition" /mnt/home
     if mountpoint /mnt/home = "/mnt/home is not a mountpoint"; then
       clear
-      echo -e "$homepartition is not mounted successfully. Aborting installation!\nInstallation failed..."
+      echo "$homepartition is not mounted successfully."
+      echo "Aborting installation!"
+      echo "Installation failed..."
       exit 1
     else
       echo "Cool $homepartition mounted at /mnt/home"
