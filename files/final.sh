@@ -27,7 +27,7 @@ installationComplete() {
     echo "Metis Linux Installation Finished!!!"
     echo " "
     echo "If you've installed metis-os in a VM, it may be buggy or could perform slow or abnormally, try disabling the picom compositor."
-    echo "If you have any problems, bugs, or errors, report them to https://github.com/metis-os/reports/issues or https://t.me/metislinux"
+    echo "If you have any problems, bugs or errors, report them to https://github.com/metis-os/reports/issues or https://t.me/metislinux"
     echo "Default key-bindings for metis-linux are available at https://metislinux.org/key-bindings"
     echo "Rebooting in 1 minute!!!"
     sleep 60s
