@@ -1,4 +1,4 @@
-# Maintainer: iyamnabeen <iym.nabeen@gmail.com>
+# Maintainer: pwnwriter <iym.nabeen@gmail.com>
 pkgname=metis-sideload
 pkgver=r5.bb3ec59
 pkgrel=1
