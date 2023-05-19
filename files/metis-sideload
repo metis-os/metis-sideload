@@ -78,14 +78,15 @@ displayArt(){
   |---------------------------------------------------------------------------------------------------------|
   |_________________________________________________________________________________________________________|
   "
-  echo "Press any key to start the installation process"
+  echo "********************************************************************"
+  echo -n "Press any key to start the installation process.."
   read -r nothing
 }
 
 selectDrive() {
   lsblk
   echo "Enter the drive to install metis linux on it."
-  echo "Enter Drive (eg. sda or vda or nvme0n1): "
+  echo -n "Enter Drive (eg. sda or vda or nvme0n1): "
   read -r drive
 }
 
@@ -100,7 +101,7 @@ checkDrive() {
 
 selectRoot() {
   lsblk
-  echo "Enter the root partition (eg: sda1 or nvme0n1p2 or vda4): "
+  echo -n "Enter the root partition (eg: sda1 or nvme0n1p2 or vda4): "
   read -r rootpartition
 }
 
@@ -115,7 +116,7 @@ checkRoot() {
 
 selectHome() {
   lsblk
-  echo "Enter the home partition (eg: sda1 or nvme0n1p2 or vda4): "
+  echo -n "Enter the home partition (eg: sda1 or nvme0n1p2 or vda4): "
   read -r homepartition
 }
 
@@ -130,7 +131,7 @@ checkHome() {
 
 selectSwap() {
   lsblk
-  echo "Enter swap partition (eg: sda3, nvme0n1p1or vda3): "
+  echo -n "Enter swap partition (eg: sda3, nvme0n1p1or vda3): "
   read -r swappartition
 }
 
@@ -161,6 +162,7 @@ diskPartition(){
   echo " 2. cfdisk"
   echo " 3. gdisk"
   echo " 4. parted"
+  echo -n "=> "
   read -r partitionutility
 
   case "$partitionutility" in
@@ -188,7 +190,6 @@ diskPartition(){
   echo "root partition is mandatory."
   echo "home and swap partitions are optional but recommended!"
   echo "Also, you can create a separate partition for timeshift backup (optional)!"
-  echo "Getting ready in 15 seconds"
   "$partitionutility" /dev/"$drive"
   clear
   lsblk
@@ -197,7 +198,7 @@ diskPartition(){
   echo " 3. btrfs (only for uefi systems. leagacy system doesnot support btrfs)"
   echo " 4. f2fs"
   echo " Boot partition will be formatted later in fat32 file system (for uefi systems only)."
-  echo "Choose your linux file system type for formatting drives [default=ext4]: "
+  echo -n "Choose your linux file system type for formatting drives [default=ext4]: "
   read -r filesystemtype
 
   case "$filesystemtype" in
@@ -227,7 +228,6 @@ diskPartition(){
   esac
   echo "$filesystemtype is the selected file system type."
   echo "Getting ready for formatting drives."
-  sleep 3s
   selectRoot
   checkRoot
   mkfs."$filesystemtype" /dev/"$rootpartition"
@@ -242,7 +242,7 @@ diskPartition(){
 
   clear
   lsblk
-  echo "Did you create a separate home partition? [y/n]: " 
+  echo -n "Did you create a separate home partition? [y/n]: " 
   read -r answerhome
   case "$answerhome" in
     y | Y | yes | Yes | YES)
@@ -265,7 +265,7 @@ diskPartition(){
   esac
   clear
   lsblk
-  echo  "Did you create a separate swap partition? [y/n]: "
+  echo  -n "Did you create a separate swap partition? [y/n]: "
   read -r answerswap
   case "$answerswap" in
     y | Y | yes | Yes | YES)

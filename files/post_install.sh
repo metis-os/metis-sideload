@@ -67,7 +67,7 @@ timezone() {
                 ln -sf "/usr/share/zoneinfo/${time_zone}" /etc/localtime && break
                 ;;
             No)
-                echo "Please enter your desired timezone e.g. Asia/Kathmandu or Europe/London (Case Sensative): "
+                echo -n "Please enter your desired timezone e.g. Asia/Kathmandu or Europe/London (Case Sensative): "
                 read -r new_timezone
                 echo "Checking timezone $new_timezone ..."
                 if ! ls "/usr/share/zoneinfo/${new_timezone}"
@@ -114,7 +114,7 @@ settingKeyboard() {
 
 settingHostname() {
     clear
-    echo "Enter your computer name: "
+    echo -n "Enter your computer name: "
     read -r hostname
     echo "$hostname" > /etc/hostname
     echo "Checking hostname (/etc/hostname)"
@@ -198,7 +198,7 @@ addingUser() {
     passwd
     clear
     echo "Adding regular user!"
-    echo "Enter username to add a regular user: "
+    echo -n "Enter username to add a regular user: "
     read -r username
     useradd -m -g users -G wheel,audio,video,network,storage -s /bin/zsh "$username" || ignoreableErrors
     echo "To set password for $username, use different password than of root."
@@ -267,7 +267,7 @@ selectDrive() {
   lsblk
   echo "Enter the drive name to install bootloader in it. (eg: sda or nvme01 or vda or something similar)! "
   echo "NOTE: JUST GIVE DRIVE NAME (sda, nvme0n1, vda or something similar); NOT THE PARTITION NAME (sda1)"
-  echo "Enter the drive name: "
+  echo -n "Enter the drive name: "
   read -r grubdrive
 }
 
@@ -282,7 +282,7 @@ checkDrive() {
 
 selectGrub() {
   lsblk
-  echo "Enter the boot/grub installation partition (eg: sda1 or nvme0n1p2 or vda4): "
+  echo -n "Enter the boot/grub installation partition (eg: sda1 or nvme0n1p2 or vda4): "
   read -r grubpartition
 }
 
