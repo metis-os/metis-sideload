@@ -4,23 +4,20 @@ postRemoval() {
     clear
     echo "Removing unnecessary installation files..."
     rm -rf /mnt/post_install.sh
-    sleep 2s
 }
 
 unmountingDrives() {
     clear
     echo "Unmounting all the drives" 
     umount -R /mnt
-    sleep 2s
 }
 
 pointToRemember() {
-    sleep 2s
     clear
     echo "After rebooting into the newly installed metis linux system, you must select xinitrc in login screen."
     echo "There are other options like Dwm, shell and xinitrc above the username field. Strictly select xinitrc, then enter your username and password and login."
-    echo " "
-    sleep 15s
+    echo -n "Press enter to continue"
+    read -r hello
 }
 
 installationComplete() {
@@ -30,7 +27,6 @@ installationComplete() {
     echo "If you have any problems, bugs or errors, report them to https://github.com/metis-os/reports/issues or https://t.me/metislinux"
     echo "Default key-bindings for metis-linux are available at https://metislinux.org/key-bindings"
     echo "Rebooting in 1 minute!!!"
-    sleep 60s
     loginctl reboot
 }
 
