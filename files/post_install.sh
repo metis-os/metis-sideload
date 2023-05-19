@@ -1,36 +1,28 @@
 #!/usr/bin/env bash
 
 failed() {
-  sleep 2s
   clear
   echo -e "Something went wrong.\nThe command could not be executed correctly!\nPlease try again.\nExitting...\nReport any problem, bug, and errors to https://github.com/metis-os/reports/issues"
-  sleep 3s
+  
   exit 1
 }
 
 installationError() {
-  sleep 2s
   clear
   echo -e "Something went wrong.\nAll the packages couldn't be installed correctly!\nPlease try again.\nExitting...\nReport any problem, bug, and errors to https://github.com/metis-os/reports/issues"
-  sleep 3s
   exit 1
 }
 
 ignoreableErrors() {
-  sleep 2s
   clear
   echo -e "Something went wrong.\nOS is installing and could be useable but the error should be manually fixed later...\nReport any problem, bug, and errors to https://github.com/metis-os/reports/issues"
-  sleep 3s
 }
 
 serviceError() {
-    sleep 2s
     echo -e "Error unable to enable the service....\nInstallation will be continued but you need to enable the service manually after reboot.\nReport any problem, bug, and errors to https://github.com/metis-os/reports/issues"
-    sleep 3s
 }
 
 displayArt(){
-  sleep 1s
   clear
   echo -ne "
   Installing Metis Linux in a VM is not recommended as it may perform slow and buggy.
@@ -48,11 +40,10 @@ displayArt(){
   |---------------------------------------------------------------------------------------------------------|
   |_________________________________________________________________________________________________________|
   "
-  sleep 4s
+  read -r nothing
 }
 
 generatingLocale() {
-    sleep 2s
     clear
     echo "Generating locale at /etc/locale.gen"
     echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen || ignoreableErrors
@@ -79,21 +70,17 @@ timezone() {
                 echo "Please enter your desired timezone e.g. Asia/Kathmandu or Europe/London (Case Sensative): "
                 read -r new_timezone
                 echo "Checking timezone $new_timezone ..."
-                sleep 2s
                 if ! ls "/usr/share/zoneinfo/${new_timezone}"
                 then
                   echo "Timezone ${new_timezone} doesnot exist."
-                  sleep 2s
                 else  
                   echo "Timezone ${new_timezone} found. Setting it up..."
                   sleep 2s
                   ln -sf "/usr/share/zoneinfo/${new_timezone}" /etc/localtime && break
                 fi
-                sleep 2s
                 ;;
             *)
             echo "Wrong option. Try again..."
-            sleep 2s
             timezone
             ;;
         esac
@@ -101,49 +88,40 @@ timezone() {
 }
 
 settingTimezone() {
-    sleep 2s
     clear
     timezone
     hwclock --systohc
     echo "Checking system date and time..."
     date
-    sleep 2s
 }
 
 settingLang() {
-    sleep 2s
     clear
     echo "Setting LANG variable"
     echo "LANG=en_US.UTF-8" >> /etc/locale.conf
     echo "LC_COLLATE=C" >> /etc/locale.conf
     echo "Checking system language..."
     cat /etc/locale.conf || ignoreableErrors
-    sleep 3s
 }
 
 settingKeyboard() {
-    sleep 2s
     clear
     echo "Setting console keyboard layout"
     echo "KEYMAP=us" > /etc/vconsole.conf
     echo "Checking system Keyboard Layout..."
     cat /etc/vconsole.conf || ignoreableErrors
-    sleep 3s
 }
 
 settingHostname() {
-    sleep 2s
     clear
     echo "Enter your computer name: "
     read -r hostname
     echo "$hostname" > /etc/hostname
     echo "Checking hostname (/etc/hostname)"
     cat /etc/hostname || ignoreableErrors
-    sleep 3s
 }
 
 settingHosts() {
-    sleep 2s
     clear
     echo "setting up hosts file"
     {
@@ -154,7 +132,6 @@ settingHosts() {
 
     echo "checking /etc/hosts file"
     cat /etc/hosts || ignoreableErrors
-    sleep 3s
 }
 
 installingBootloader() {
@@ -172,10 +149,8 @@ bootloaderCompleted() {
         installationError
       fi
         echo "Bootloader installation failed. Retrying..."
-        sleep 2s
       else {
         echo "Bootloader installation successful..."
-        sleep 2s
         break
       }
     fi
@@ -183,7 +158,6 @@ bootloaderCompleted() {
 }
 
 enablingNetworkManager() {
-    sleep 2s
     clear
     echo "Enabling NetworkManager service for runit..."
     ln -s /etc/runit/sv/NetworkManager /etc/runit/runsvdir/default || serviceError
@@ -202,21 +176,16 @@ installingLoginManager() {
       if ((s==4)); then
         echo "Login manager installation failed..."
         ignoreableErrors
-        sleep 3s
       fi
         echo "Ly login manager installation failed. Retrying..."
-        sleep 2s
       else {
         echo "ly login manager installation successful..."
-        sleep 2s
         clear
         echo "Enabling metis-ly service for runit"
         echo "This could sometimes popup a demo login screen"
         echo "If occured just press ctrl + alt + f1 keys together and continue the installation..."
-        sleep 10s
         rm -rf /etc/runit/runsvdir/default/agetty-tty2 || ignoreableErrors
         ln -s /etc/runit/sv/ly /etc/runit/runsvdir/default || serviceError
-        sleep 3s
         break
       }
     fi
@@ -227,7 +196,6 @@ addingUser() {
     clear
     echo "Enter password for root user!"
     passwd
-    sleep 1s
     clear
     echo "Adding regular user!"
     echo "Enter username to add a regular user: "
@@ -237,18 +205,15 @@ addingUser() {
     echo "Enter password for $username! "
     passwd "$username"
     echo "NOTE: ALWAYS REMEMBER THIS USERNAME AND PASSWORD YOU PUT JUST NOW."
-    sleep 3s
 }
 
 sudoAccess() {
-    sleep 2s
     clear
     echo "Giving sudo access to $username!"
     echo "$username ALL=(ALL) ALL" >> /etc/sudoers.d/"$username"
 }
 
 copyingConfig() {
-    sleep 2s
     clear
     echo "Copying config file to their absolute path..."
     mv /config/os-release /usr/lib/ || failed
@@ -261,10 +226,8 @@ copyingConfig() {
     mv /config/zshrc /home/"$username"/.zshrc || failed
     chown "$username":users /home/"$username"/.zshrc || failed
 
-    sleep 1s
     mv /config /home/"$username"/.config/ || ignoreableErrors
     chown -R "$username":users /home/"$username"/.config || ignoreableErrors
-    sleep 1s
 }
 
 installingPackages() {
@@ -281,10 +244,8 @@ packagesCompleted() {
         installationError
       fi
         echo "Failed to install required package for metis-os. Retrying..."
-        sleep 2s
       else {
         echo "Installation of required package for metis-os is successful..."
-        sleep 2s
         break
       }
     fi
@@ -292,7 +253,6 @@ packagesCompleted() {
 }
 
 installingMicrocode() {
-    sleep 2s
     clear
     if lscpu | grep  "GenuineIntel"; then
         echo "Installing Intel microcode"
@@ -352,10 +312,8 @@ uefiCompleted() {
       fi
         clear
         echo "Failed to install efibootmgr and dosfstools. Retrying..."
-        sleep 2s
       else {
         echo "Installation of efibootmgr and dosfstools successful..."
-        sleep 2s
         break
       }
     fi
@@ -363,7 +321,6 @@ uefiCompleted() {
 }
 
 configuringBootloader() {
-    sleep 2s
     clear
     if [[ ! -d "/sys/firmware/efi" ]]; then
       echo "Legacy system detected..."
@@ -373,7 +330,6 @@ configuringBootloader() {
       grub-mkconfig -o /boot/grub/grub.cfg
     else
       uefiCompleted
-      sleep 2s
       clear
       selectGrub
       checkGrub
@@ -387,18 +343,15 @@ configuringBootloader() {
         exit 1
       else
         echo "Cool $grubpartition mounted at /boot/efi! Installing grub..."
-        sleep 2s
       fi
       grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=metis --removable || failed
       grub-mkconfig -o /boot/grub/grub.cfg || failed
     fi
-    sleep 2s
 }
  
 graphicsDriver() {
     clear
     echo "Searching and Installing graphics driver if available"
-    sleep 2s
     if lspci | grep "NVIDIA|GeForce"; then
         pacman -S --noconfirm --needed nvidia nvidia-utils || ignoreableErrors
     elif lspci | grep 'VGA' | grep -E "Radeon|AMD"; then
@@ -411,7 +364,6 @@ graphicsDriver() {
 }
 
 secondphaseCompleted(){
-    sleep 2s
     clear
     echo "Second Phase Completed!"
     echo "Entering into Final Phase of Installation..."
